@@ -2,52 +2,42 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
 
 export default function Login() {
   const [admin_id, setId] = useState(sessionStorage.getItem("admin"));
   const currentYear = new Date().getFullYear();
+  const [credentias , setCredential] = useState({
+    username:"",
+    password:""
+  })
 
-  useEffect(() => {
-    if (admin_id) {
-      getAdmin();
-    }
-  }, []);
+ const handleInputChange = (e)=>{
+  const{name,value} = e.target;
+  setCredential({...credentias ,[name]:value});
+ }
 
-  const [username, setusername] = useState("");
-  const [password, setpassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
   const submitHandle = async (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.get(
-        "http://localhost:3000/gurukulalumni/adminlogin",
-        {
-          params: {
-            username: username,
-            password: password,
-          },
-        }
-      );
-
-      if (res.data > 0) {
-        setError("");
-        navigate("/");
-        sessionStorage.setItem("admin", res.data);
-
-        window.location.reload();
-      } else {
-        console.log(res.data);
-        setError("Invalid Username/Password...");
-      }
-    } catch (error) {}
-  };
-  const getAdmin = async () => {
-    const res = await axios.get(
-      "http://localhost:3000/gurukulalumni/admin/" + admin_id
-    );
-
-    console.log(res.data);
+   const username = credentias.username;
+   const password = credentias.password;
+   try {
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/Login`,{username,password});
+    if(res.data.success === 1){
+      toast.success(res.data.message , {theme:"colored"})
+      sessionStorage.setItem("adminId",res.data.id);
+      setTimeout(() => {
+        navigate('/Dashboard');
+      }, [1000]);
+    }else if(res.data.success === 0){
+      toast.error(res.data.message , {theme:"colored"});
+    }
+   } catch (error) {
+    toast.error(error);
+   }
   };
   return (
     <>
@@ -84,11 +74,11 @@ export default function Login() {
                         <div class="mb-3">
                           <input
                             type="text"
+                            name="username"
+                            value={credentias.username}
                             class="form-control"
                             placeholder="Username"
-                            aria-label="Contact"
-                            aria-describedby="contact-addon"
-                            onChange={(e) => setusername(e.target.value)}
+                            onChange={handleInputChange}
                           />
                         </div>
                         <label>Password</label>
@@ -97,9 +87,9 @@ export default function Login() {
                             type="password"
                             class="form-control"
                             placeholder="Password"
-                            aria-label="Password"
-                            aria-describedby="password-addon"
-                            onChange={(e) => setpassword(e.target.value)}
+                            name="password"
+                            value={credentias.password}
+                            onChange={handleInputChange}
                           />
                         </div>
 
@@ -137,6 +127,7 @@ export default function Login() {
             </div>
           </div>
         </footer>
+        <ToastContainer/>
       </main>
     </>
   );
