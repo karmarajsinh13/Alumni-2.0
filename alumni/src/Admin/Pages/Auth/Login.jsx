@@ -24,11 +24,11 @@ export default function Login() {
     e.preventDefault();
    const username = credentias.username;
    const password = credentias.password;
-   try {
+   try{
     const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/Login`,{username,password});
     if(res.data.success === 1){
       toast.success(res.data.message , {theme:"colored"})
-      sessionStorage.setItem("adminId",res.data.id);
+      sessionStorage.setItem("admin",res.data.id);
       setTimeout(() => {
         navigate('/Dashboard');
       }, [1000]);

@@ -1,31 +1,23 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
-import {
-  AiOutlineLaptop,
-  AiOutlineMan,
-  AiOutlineProfile,
-} from "react-icons/ai";
+import {AiOutlineLaptop,AiOutlineMan,AiOutlineProfile,} from "react-icons/ai";
 import { CiUser } from "react-icons/ci";
 import { RiGalleryLine, RiUser2Fill, RiUser3Fill, RiUser3Line } from "react-icons/ri";
-import {
-  PiBuildings,
-  PiContactlessPaymentBold,
-  PiSmileyBold,
-} from "react-icons/pi";
+import {PiBuildings,PiContactlessPaymentBold,PiSmileyBold,} from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
 import axios from "axios";
 import { useEffect } from "react";
 
 export default function Sidebar() {
   const [admin_id, setId] = useState(sessionStorage.getItem("admin"));
-  const [Admin, setAdmin] = useState([]);
+  const [adminDetails, setadminDetails] = useState({});
   const [firstname, setName] = useState("");
   const [photo, setphoto] = useState("");
 
   const navigate = useNavigate();
   useEffect(() => {
-    if (admin_id) fatchUserName();
+    // if (admin_id) fatchUserName();
     getAdmin();
     if (!admin_id) {
       navigate("/");
@@ -41,11 +33,12 @@ export default function Sidebar() {
       setName(res.data.firstname);
     } catch (error) {}
   };
+
   const getAdmin = async () => {
-    const res = await axios.get(
-      "http://localhost:3000/gurukulalumni/admin/" + admin_id
-    );
-    setAdmin(res.data);
+    console.log(admin_id)
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/GetAdmin`,{admin_id});
+    setadminDetails(res.data.admin[0]);
+    
     setName(res.data.firstname);
     setphoto(res.data.photo);
     console.log(res.data);
@@ -65,7 +58,7 @@ export default function Sidebar() {
     setId("");
     navigate("/");
     window.location.reload();
-
+    
     //navigate("/Login")
   };
   // const [auth, setAuth] = useState(sessionStorage.getItem("user"));
@@ -110,12 +103,7 @@ export default function Sidebar() {
     },
   ];
 
-  // const btnSignOut = () => {
-  //   sessionStorage.clear();
-  //   setAuth("");
-  //   // window.location.reload();
-  //   navigate("/");
-  // };
+  console.log(adminDetails)
   return (
     <>
       <div
@@ -154,13 +142,12 @@ export default function Sidebar() {
         {admin_id ? (
         <center className="mt-3">
           <Link to="/Profile">
-          <a >
+          <a>
             <img
-              src={`http://localhost:3000/uploads/${photo}`}
+              src={`${process.env.REACT_APP_API_URL}/uploads/${adminDetails.photo}`}
               class="navbar-brand-img h-100 rounded-circle"
-              alt="main_logo"
             />
-            <span  class="ms-1 font-weight-bold">&nbsp;&nbsp;{firstname}</span>
+            <span  class="ms-1 font-weight-bold">&nbsp;&nbsp;{adminDetails.firstname}</span>
           </a></Link>
         </center>
          ) : null}
