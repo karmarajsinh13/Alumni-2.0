@@ -2,6 +2,7 @@ import {Route,BrowserRouter,Routes,Outlet,createBrowserRouter,RouterProvider,Rou
 import React, { useState } from "react";
 import Login from "./Admin/Pages/Auth/Login";
 import Dashboard from "./Admin/Pages/Dashboard/Dashboard";
+import Users from "./Admin/Pages/User/Users";
 
 function App() {
 
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Users" element={<Users />} />
         </Routes>
       </BrowserRouter>
     </>

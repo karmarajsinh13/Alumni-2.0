@@ -5,7 +5,10 @@ const app = express();
 
 // Authentication
 import Login from "./Routes/Auth/Login.js";
-import GetAdmin from "./Routes/User/GetAdmin..js";
+
+//Get Users
+import GetAdmin from "./Routes/User/GetAdmin.js";
+import GetUser from "./Routes/User/GetUser.js";
 
 app.use(json());
 app.use(cors());
@@ -13,7 +16,10 @@ app.use("/uploads", express.static("uploads"));
 
 //Authentication
 app.use("/api/Login",Login);
+
+//Get Users
 app.use("/api/GetAdmin",GetAdmin)
+app.use("/api/GetUser",GetUser)
 
 
 async function checkDatabaseConnection() {

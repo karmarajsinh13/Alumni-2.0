@@ -1,10 +1,23 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { IoHomeOutline } from "react-icons/io5";
-import {AiOutlineLaptop,AiOutlineMan,AiOutlineProfile,} from "react-icons/ai";
+import {
+  AiOutlineLaptop,
+  AiOutlineMan,
+  AiOutlineProfile,
+} from "react-icons/ai";
 import { CiUser } from "react-icons/ci";
-import { RiGalleryLine, RiUser2Fill, RiUser3Fill, RiUser3Line } from "react-icons/ri";
-import {PiBuildings,PiContactlessPaymentBold,PiSmileyBold,} from "react-icons/pi";
+import {
+  RiGalleryLine,
+  RiUser2Fill,
+  RiUser3Fill,
+  RiUser3Line,
+} from "react-icons/ri";
+import {
+  PiBuildings,
+  PiContactlessPaymentBold,
+  PiSmileyBold,
+} from "react-icons/pi";
 import { IoIosLogOut } from "react-icons/io";
 import axios from "axios";
 import { useEffect } from "react";
@@ -25,20 +38,23 @@ export default function Sidebar() {
     }
   }, [admin_id]);
 
-
-
   const fatchUserName = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/gurukulalumni/admin" + admin_id);
+      const res = await axios.get(
+        "http://localhost:3000/gurukulalumni/admin" + admin_id
+      );
       setName(res.data.firstname);
     } catch (error) {}
   };
 
   const getAdmin = async () => {
-    console.log(admin_id)
-    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/GetAdmin`,{admin_id});
+    console.log(admin_id);
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_URL}/api/GetAdmin`,
+      { admin_id }
+    );
     setadminDetails(res.data.admin[0]);
-    
+
     setName(res.data.firstname);
     setphoto(res.data.photo);
     console.log(res.data);
@@ -58,7 +74,7 @@ export default function Sidebar() {
     setId("");
     navigate("/");
     window.location.reload();
-    
+
     //navigate("/Login")
   };
   // const [auth, setAuth] = useState(sessionStorage.getItem("user"));
@@ -103,7 +119,7 @@ export default function Sidebar() {
     },
   ];
 
-  console.log(adminDetails)
+  console.log(adminDetails);
   return (
     <>
       <div
@@ -115,42 +131,38 @@ export default function Sidebar() {
         <span class="mask bg-primary opacity-6"></span>
       </div>
 
-      <aside
-        class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 fixed-start"
-       
-      >
-        <div class="sidenav-header">
-          <i
-            class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
-          
-          ></i>
-          <a
-            class="navbar-brand m-0"
-          
-          >
+      <aside class="sidenav bg-white navbar navbar-vertical navbar-expand-xs border-0 fixed-start">
+        <div class="sidenav-header d-flex align-items-center">
+          <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"></i>
+          <a class="navbar-brand m-0 d-flex align-items-center">
             <img
               src="https://tse3.mm.bing.net/th?id=OIP.2At97O-LiwWs4MoBmIjEcwHaHc&pid=Api&P=0&h=180"
               class="navbar-brand-img h-100"
               alt="main_logo"
             />
-            <span class="ms-1 font-weight-bold">
-              &nbsp;&nbsp;G U R U K U L &nbsp;&nbsp;A l u m n i
+            <span class="ms-2 font-weight-bold">
+              G U R U K U L &nbsp;&nbsp;A l u m n i
             </span>
           </a>
         </div>
+
         <hr class="horizontal dark mt-1" />
         {admin_id ? (
-        <center className="mt-3">
-          <Link to="/Profile">
-          <a>
-            <img
-              src={`${process.env.REACT_APP_API_URL}/uploads/${adminDetails.photo}`}
-              class="navbar-brand-img h-100 rounded-circle"
-            />
-            <span  class="ms-1 font-weight-bold">&nbsp;&nbsp;{adminDetails.firstname}</span>
-          </a></Link>
-        </center>
-         ) : null}
+          <div className="mt-3 d-flex justify-content-center align-items-center">
+            <Link to="/Profile">
+              <a className="d-flex align-items-center">
+                <img
+                  src={`${process.env.REACT_APP_API_URL}/uploads/${adminDetails.photo}`}
+                  className="navbar-brand-img h-100 rounded-circle"
+                  alt="admin-profile"
+                />
+                <span className="ms-2 font-weight-bold">
+                  {adminDetails.firstname}
+                </span>
+              </a>
+            </Link>
+          </div>
+        ) : null}
         <hr class="horizontal dark mt-0" />
 
         <>
