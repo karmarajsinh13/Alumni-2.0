@@ -105,13 +105,7 @@ export default function Add_users() {
       <Sidebar />
       <div className="w-full bg-gray-100">
         <Header />
-        <div
-          style={{
-            marginTop: "50px",
-            marginLeft: "100px",
-            marginRight: "20px",
-          }}
-        >
+        
           <div
             style={{
               marginTop: "50px",
@@ -442,7 +436,6 @@ export default function Add_users() {
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
   );
