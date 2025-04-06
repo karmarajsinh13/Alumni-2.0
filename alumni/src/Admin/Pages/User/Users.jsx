@@ -143,7 +143,7 @@ export default function Users() {
                   <h2 className="text-2xl font-semibold">User Table</h2>
                   <Link
                     className="btn btn-outline-primary btn-sm"
-                    to="/Add_users"
+                    to="/adduser"
                   >
                     Add User
                   </Link>
