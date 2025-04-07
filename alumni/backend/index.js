@@ -9,6 +9,7 @@ import Login from "./Routes/Auth/Login.js";
 //Get Users
 import GetAdmin from "./Routes/User/GetAdmin.js";
 import GetUser from "./Routes/User/GetUser.js";
+import AddUser from "./Routes/User/AddUser.js";
 
 app.use(json());
 app.use(cors());
@@ -17,9 +18,10 @@ app.use("/uploads", express.static("uploads"));
 //Authentication
 app.use("/api/Login",Login);
 
-//Get Users
+//Users
 app.use("/api/GetAdmin",GetAdmin)
 app.use("/api/GetUser",GetUser)
+app.use("/api/AddUser",AddUser)
 
 
 async function checkDatabaseConnection() {

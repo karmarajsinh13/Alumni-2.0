@@ -5,19 +5,21 @@ import Sidebar from "../Sidebar/Sidebar";
 import Header from "../Header/Header";
 
 export default function Add_users() {
-  const [firstname, setFname] = useState("");
-  const [lastname, setLname] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [status, setStatus] = useState("");
+
+const [formaData,setFormData] = useState({
+  firstname:"",
+  lastname:"",
+  username:"",
+  password:"",
+  address:"",
+  dob:"",
+  email:"",
+  phone:"",
+})
   const [photo, setImg] = useState("");
-  const [address, setAddress] = useState("");
+  const [gender, setgender] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
-  const [dob, setdob] = useState("");
-  const [gender, setgender] = useState("");
-  const [email, setemail] = useState("");
-  const [phone, setphone] = useState("");
   const [passing_year, setpassing_year] = useState("");
   const [formErrors, setFormErrors] = useState({});
   const location = useLocation();
@@ -25,81 +27,77 @@ export default function Add_users() {
   const user_id = location.pathname.split("/")[2]
     ? location.pathname.split("/")[2]
     : "";
-  useEffect(() => {
-    console.log(user_id);
-    if (user_id) {
-      getUser();
-    }
-  }, []);
-  const getUser = async () => {
-    const url = "http://localhost:3000/gurukulalumni/user/" + user_id;
-    console.log(url);
-    const res = await axios.get(url);
-    console.log(res.data);
-    setFname(res.data.firstname);
-    setLname(res.data.lastname);
-    setUsername(res.data.username);
-    setPassword(res.data.password);
-    setStatus(res.data.status);
-    setImg(res.data.photo);
-    setAddress(res.data.address);
-    setCity(res.data.city);
-    setState(res.data.state);
-    setemail(res.data.email);
-    setphone(res.data.phone);
-    setpassing_year(res.data.passing_year);
-    setdob(res.data.dob);
-    setgender(res.data.gender);
-  };
+ 
+
+  const handleInputChange = (e)=>{
+    const{name,value}= e.target;
+    setFormData({...formaData,[name]:value})
+  }
+  const handleFileChange = (e)=>{
+    const {name , files} = e.target;
+    setImg(files[0]);
+  }
+
   const validate = () => {
     const error = {};
 
-    if (!username) {
+    if (!formaData.username) {
       error.username = "Please Enter Your User name";
     }
 
-    if (!password) {
+    if (!formaData.password) {
       error.password = "Password is required Broooo!!!";
     }
     return error;
   };
+
+  const firstname = formaData.firstname;
+  const lastname = formaData.lastname;
+  const dob = formaData.dob;
+  const email = formaData.email;
+  const phone = formaData.phone;
+  const address = formaData.address;
+  const password = formaData.password;
+
   const submitbtn = async (e) => {
     e.preventDefault();
     setFormErrors(validate());
-    if (username && password) {
-      const formdata = new FormData();
-      formdata.append("firstname", firstname);
-      formdata.append("lastname", lastname);
-      formdata.append("username", username);
-      formdata.append("password", password);
-      formdata.append("status", status);
-      formdata.append("photo", photo);
-      formdata.append("address", address);
-      formdata.append("city", city);
-      formdata.append("state", state);
-      formdata.append("email", email);
-      formdata.append("phone", phone);
-      formdata.append("passing_year", passing_year);
-      formdata.append("dob", dob);
-      formdata.append("gender", gender);
-      let res = "";
-      console.log(formdata);
-      if (user_id) {
-        res = await axios.put(
-          "http://localhost:3000/gurukulalumni/user/" + user_id,
-          formdata
-        );
-      } else {
-        res = await axios.post(
-          "http://localhost:3000/gurukulalumni/user",
-          formdata
-        );
-      }
-      alert(res.data);
-      console.log(res.data);
-      navigate("/Users");
+    
+    // Create a new FormData object and append the data
+    const formdata = new FormData();
+    formdata.append("firstname", firstname);
+    formdata.append("lastname", lastname);
+    formdata.append("dob", dob);
+    formdata.append("email", email);
+    formdata.append("phone", phone);
+    formdata.append("address", address);
+    formdata.append("password", password);
+    formdata.append("city", city);
+    formdata.append("state", state);
+    formdata.append("gender", gender);
+    formdata.append("passing_year", passing_year);
+    formdata.append("photo", photo); 
+
+    // Log the formdata entries to check what’s inside
+    for (let pair of formdata.entries()) {
+        console.log(pair[0]+ ': ' + pair[1]);
     }
-  };
+
+    try {
+        // Send the formdata directly to the server
+        const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/AddUser`, formdata, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Ensure the correct header is set
+            }
+        });
+
+        // Handle the response here
+        console.log(res.data);  // Add your response handling here
+    } catch (error) {
+        console.error("Error submitting form", error);
+    }
+};
+
   return (
     <div className="flex">
       <Sidebar />
@@ -141,8 +139,10 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
-                                defaultValue={firstname}
-                                onChange={(e) => setFname(e.target.value)}
+                                placeholder="Enter Firstname"
+                                name="firstname"
+                                value={formaData.firstname}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -157,8 +157,10 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
-                                defaultValue={lastname}
-                                onChange={(e) => setLname(e.target.value)}
+                                placeholder="Enter Lastname"
+                                name="lastname"
+                                value={formaData.lastname}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -173,8 +175,10 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
-                                defaultValue={phone}
-                                onChange={(e) => setphone(e.target.value)}
+                                name="phone"
+                                placeholder="Enter Phone"
+                                value={formaData.phone}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -189,8 +193,10 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
-                                defaultValue={email}
-                                onChange={(e) => setemail(e.target.value)}
+                                name="email"
+                                placeholder="Enter Email Address"
+                                value={formaData.email}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -205,43 +211,16 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
-                                defaultValue={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                name="username"
+                                placeholder="Enter Username @"
+                                value={formaData.username}
+                                onChange={handleInputChange}
                               />
                               <p style={{ color: "red" }}>
                                 {formErrors.username}
                               </p>
                             </div>
                           </div>
-                          {/* <div className="col-md-6">
-                      <div className="form-group">
-                        <label
-                          htmlFor="example-text-input"
-                          className="form-control-label"
-                        >
-                          graduated_year
-                        </label>
-                        <select name="status" class="form-control" 
-                        onChange={(e) => setgraduated_year(e.target.value)}>
-                          <option>Choose</option>
-                          <option value="0">2023</option>
-                          <option value="1">2024</option>
-              
-                        </select>
-                      </div>
-                    </div>
-                    <div className="col-md-6">
-                      <div className="form-group">
-                        <label
-                          htmlFor="example-text-input"
-                          className="form-control-label"
-                        >
-                          Dob
-                        </label>
-                        <input className="form-control" type="date" 
-                        onChange={(e) => setdob(e.target.value)} />
-                      </div>
-                    </div> */}
                           <div className="col-md-6">
                             <div className="form-group">
                               <label
@@ -253,8 +232,8 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="file"
-                                defaultValue={photo}
-                                onChange={(e) => setImg(e.target.files[0])}
+                                name="photo"
+                                onChange={handleFileChange}
                               />
                             </div>
                           </div>
@@ -269,8 +248,9 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="date"
-                                defaultValue={dob}
-                                onChange={(e) => setdob(e.target.value)}
+                                name="dob"
+                                value={formaData.dob}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
@@ -335,8 +315,10 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="password"
-                                defaultValue={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                name="password"
+                                placeholder="Enter Password"
+                                value={formaData.password}
+                                onChange={handleInputChange}
                               />
                               <p style={{ color: "red" }}>
                                 {formErrors.password}
@@ -354,6 +336,7 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
+                                placeholder="Enter City"
                                 defaultValue={city}
                                 onChange={(e) => setCity(e.target.value)}
                               />
@@ -370,6 +353,7 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
+                                placeholder="Enter State"
                                 defaultValue={state}
                                 onChange={(e) => setState(e.target.value)}
                               />
@@ -378,8 +362,7 @@ export default function Add_users() {
 
                           <div className="col-md-12">
                             <div className="form-group">
-                              <label
-                                htmlFor="example-text-input"
+                              <label                              
                                 className="form-control-label"
                               >
                                 Address
@@ -387,48 +370,23 @@ export default function Add_users() {
                               <input
                                 className="form-control"
                                 type="text"
-                                defaultValue={address}
-                                onChange={(e) => setAddress(e.target.value)}
+                                name="address"
+                                placeholder="Enter Address"
+                                value={formaData.address}
+                                onChange={handleInputChange}
                               />
                             </div>
                           </div>
-                          <div class="col-md-4">
-                            <div className="form-group">
-                              <label
-                                htmlFor="example-text-input"
-                                className="form-control-label"
-                              >
-                                Status
-                              </label>
-                              <select
-                                name="status"
-                                class="form-control"
-                                defaultValue={status}
-                                onChange={(e) => setStatus(e.target.value)}
-                              >
-                                <option>Choose</option>
-                                <option value="0">Inactive</option>
-                                <option value="1">Active</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div
-                            class="text-center"
-                            style={{
-                              marginBottom: "20px",
-                              marginRight: "1000px",
-                              marginLeft: "10px",
-                            }}
-                          ></div>
                         </div>
-
-                        <button
+                       <div className="flex justify-center">
+                       <button
                           type="button"
-                          class="btn bg-gradient-info w-100 mt-4 mb-0"
+                          class="btn bg-gradient-info w-1/5 mt-4 mb-0"
                           onClick={submitbtn}
                         >
                           Submit
                         </button>
+                       </div>
                       </div>
                     </form>
                   </div>
