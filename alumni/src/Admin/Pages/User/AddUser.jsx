@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../Sidebar/Sidebar";
 import Header from "../Header/Header";
 import Select from "react-select";
@@ -19,16 +19,14 @@ export default function Add_users() {
     passingYear: "",
     gender: "",
   });
+  const { id } = useParams();
   const [photo, setImg] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [passing_year, setpassing_year] = useState("");
   const [formErrors, setFormErrors] = useState({});
-  const location = useLocation();
   const navigate = useNavigate();
-  const user_id = location.pathname.split("/")[2]
-    ? location.pathname.split("/")[2]
-    : "";
+    
   const yearOptions = [
     { value: "2015", label: "2015" },
     { value: "2016", label: "2016" },
@@ -90,46 +88,77 @@ export default function Add_users() {
   const passingYear = formaData.passingYear;
   const gender = formaData.gender
 
-  const submitbtn = async (e) => {
-    e.preventDefault();
-    setFormErrors(validate());
-
-    // Create a new FormData object and append the data
-    const formdata = new FormData();
-    formdata.append("firstname", firstname);
-    formdata.append("lastname", lastname);
-    formdata.append("dob", dob);
-    formdata.append("email", email);
-    formdata.append("phone", phone);
-    formdata.append("address", address);
-    formdata.append("password", password);
-    formdata.append("username", username);
-    formdata.append("city", city);
-    formdata.append("state", state);
-    formdata.append("gender", gender);
-    formdata.append("passing_year", passing_year);
-    formdata.append("photo", photo);
-    formdata.append("passingYear", passingYear);
-
-    // Log the formdata entries to check what’s inside
-    for (let pair of formdata.entries()) {
-      console.log(pair[0] + ": " + pair[1]);
+  const submitbtn = async () => {
+    const formDataToSend = new FormData();
+    formDataToSend.append("firstname", formaData.firstname);
+    formDataToSend.append("lastname", formaData.lastname);
+    formDataToSend.append("username", formaData.username);
+    formDataToSend.append("password", formaData.password);
+    formDataToSend.append("address", formaData.address);
+    formDataToSend.append("dob", formaData.dob);
+    formDataToSend.append("email", formaData.email);
+    formDataToSend.append("phone", formaData.phone);
+    formDataToSend.append("passingYear", formaData.passingYear);
+    formDataToSend.append("gender", formaData.gender);
+    formDataToSend.append("city", city);
+    formDataToSend.append("state", state);
+  
+    if (photo && typeof photo !== "string") {
+      formDataToSend.append("photo", photo);
+    } else if (typeof photo === "string") {
+      formDataToSend.append("existingPhoto", photo);
     }
-
+  
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/AddUser`,formdata,);
-      if(res.data.success === 1){
+      let res;
+      if (id > 0) {
+        formDataToSend.append("id", id);
+        res = await axios.post(`${process.env.REACT_APP_API_URL}/api/UpdateUser`, formDataToSend);
+      } else {
+        res = await axios.post(`${process.env.REACT_APP_API_URL}/api/AddUser`, formDataToSend);
+      }
+  
+      if (res.data.success === 1) {
         toast.success(res.data.message,{theme:"colored"});
         setTimeout(() => {
-          navigate("/Users")
-        }, [1000]);
-      }else {
+          navigate("/Users");
+        }, [1000]); 
+      } else {
         toast.error(res.data.message,{theme:"colored"});
+        
       }
-    } catch (error) {
-      console.error("Error submitting form", error);
+    } catch (err) {
+      console.error("Error in submit", err);
     }
   };
+  const getUserData = async ()=>{
+    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/GetUser`,{id:id});
+    if(res.data.success === 1){
+      console.log(res.data.singleuser);
+      const user = res.data.singleuser;
+      setFormData({
+        firstname: user.firstname || "",
+        lastname: user.lastname || "",
+        username: user.username || "",
+        password: user.password || "",
+        address: user.address || "",
+        dob: user.dob ? user.dob.split("T")[0] : "",
+        email: user.email || "",
+        phone: user.phone || "",
+        passingYear: user.passing_year ? String(user.passing_year) : "",
+        gender: user.gender || "",
+      });
+
+      setCity(user.city || "");
+      setState(user.state || "");
+      setImg(user.photo || "");
+    }
+  }
+  useEffect(() => {
+    if (id) {
+      getUserData();
+    }
+  }, [id]);
 
   return (
     <div className="flex">
@@ -316,7 +345,7 @@ export default function Add_users() {
                             <Select
                               name="gender"
                               options={genderOptions}
-                              value={genderOptions.find((option) =>option.value === gender)}
+                              value={genderOptions.find((option) =>option.value === formaData.gender)}
                               onChange={handleGenderChange}
                               placeholder="Select Gender"
 

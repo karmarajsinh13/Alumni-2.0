@@ -48,7 +48,6 @@ export default function Sidebar() {
   };
 
   const getAdmin = async () => {
-    console.log(admin_id);
     const res = await axios.post(
       `${process.env.REACT_APP_API_URL}/api/GetAdmin`,
       { admin_id }
@@ -57,7 +56,6 @@ export default function Sidebar() {
 
     setName(res.data.firstname);
     setphoto(res.data.photo);
-    console.log(res.data);
   };
 
   // const User_profile = () => {
@@ -119,7 +117,6 @@ export default function Sidebar() {
     },
   ];
 
-  console.log(adminDetails);
   return (
     <>
       <div

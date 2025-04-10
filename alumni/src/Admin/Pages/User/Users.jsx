@@ -108,7 +108,7 @@ export default function Users() {
             <MdDelete />
           </button>
           <Link
-            to={`/Add_users/${row.user_id}`}
+            to={`/adduser/${row.user_id}`}
             className="btn btn-link text-dark text-gradient px-3 mb-0"
             style={{ fontSize: "20px", padding: "5px" }}
           >

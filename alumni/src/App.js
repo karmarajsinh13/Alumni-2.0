@@ -15,6 +15,7 @@ function App() {
           <Route path="/Dashboard" element={<Dashboard />} />
           <Route path="/Users" element={<Users />} />
           <Route path="/adduser" element={<Add_users />} />
+          <Route path="/adduser/:id" element={<Add_users />} />
         </Routes>
       </BrowserRouter>
     </>
