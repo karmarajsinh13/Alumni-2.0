@@ -10,6 +10,7 @@ import Login from "./Routes/Auth/Login.js";
 import GetAdmin from "./Routes/User/GetAdmin.js";
 import GetUser from "./Routes/User/GetUser.js";
 import AddUser from "./Routes/User/AddUser.js";
+import UpdateUser from "./Routes/User/UpdateUser.js";
 
 app.use(json());
 app.use(cors());
@@ -22,6 +23,7 @@ app.use("/api/Login",Login);
 app.use("/api/GetAdmin",GetAdmin)
 app.use("/api/GetUser",GetUser)
 app.use("/api/AddUser",AddUser)
+app.use("/api/UpdateUser",UpdateUser)
 
 
 async function checkDatabaseConnection() {

@@ -77,18 +77,10 @@ export default function Add_users() {
     return error;
   };
 
-  const firstname = formaData.firstname;
-  const lastname = formaData.lastname;
-  const dob = formaData.dob;
-  const email = formaData.email;
-  const phone = formaData.phone;
-  const address = formaData.address;
-  const password = formaData.password;
-  const username = formaData.username;
-  const passingYear = formaData.passingYear;
-  const gender = formaData.gender
+  
 
-  const submitbtn = async () => {
+  const submitbtn = async (e) => {
+    e.preventDefault();
     const formDataToSend = new FormData();
     formDataToSend.append("firstname", formaData.firstname);
     formDataToSend.append("lastname", formaData.lastname);
