@@ -100,15 +100,14 @@ export default function Add_users() {
     } else if (typeof photo === "string") {
       formDataToSend.append("existingPhoto", photo);
     }
-  
-    try {
-      let res;
-      if (id > 0) {
-        formDataToSend.append("id", id);
-        res = await axios.post(`${process.env.REACT_APP_API_URL}/api/UpdateUser`, formDataToSend);
-      } else {
-        res = await axios.post(`${process.env.REACT_APP_API_URL}/api/AddUser`, formDataToSend);
-      }
+       try {const config = {headers: {'Content-Type': 'multipart/form-data'}};
+        let res;
+        if (id > 0) {
+            formDataToSend.append("id", id);
+            res = await axios.post(`${process.env.REACT_APP_API_URL}/api/UpdateUser`, formDataToSend, config);
+        } else {
+            res = await axios.post(`${process.env.REACT_APP_API_URL}/api/AddUser`, formDataToSend, config);
+        }
   
       if (res.data.success === 1) {
         toast.success(res.data.message,{theme:"colored"});
